@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tower Of Hanoi</title>
+	<style>
+		html, * {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			text-align: center;
+		}
+
+		.grid {
+			background: lightgreen;
+			margin: auto;
+		}
+
+		p:nth-child(1) {
+			padding: 10px 20px;
+			text-align: center;
+			font-family: ubuntu;
+			font-weight: bolder;
+			font-size: 25px;
+			text-transform: uppercase;
+			color: gray;
+		}
+
+		.solve {
+			padding: 10px 30px;
+		}
+
+		.number {
+			width: 100px;
+			padding: 10px 20px;
+		}
+
+	</style>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+	<p>Tower Of Hanoi</p>
+	<canvas class='grid' width="1000" height="550">
+		
+	</canvas>
+	<div>
+		<input type="number" name="" class="number" placeholder="size">
+		<button class="solve">
+			Solve
+		</button>
+	</div>
+	<script>
+
+// Main
+	let ctx = document.querySelector("canvas").getContext("2d");
+	width =  20;
+	height = 400;
+	time_delay = 1000;
+	size = 0;
+	s = [];
+	d = [];
+	h = [];
+	init();
+// Utility
+
+	function init() {
+		pw = ctx.canvas.width / 4;
+		w = 10;
+		hh = 400;
+		for(let i=0; i<3; i++) {
+			ctx.fillStyle = "brown";
+			ctx.fillRect((i + 1) * pw - w, ctx.canvas.height - hh, w + w, hh);
+		}
+		add_listeners();
+	}
+
+	function add_listeners() {
+		document.querySelector(".solve").addEventListener("click", () => {
+			num = document.querySelector(".number").value;
+			if(num == "") {
+				alert("please enter the size");
+				return;
+			}
+			num = +num;
+			if(num > 5 || num < 0) {
+				alert("Size should lie in the range (1, 5]")
+				return
+			}
+			size = num;
+
+			for(let i = size; i>0; i--) {
+				s.push(i);
+			}
+			document.querySelector(".solve").disabled = true;
+			stepsToSolveHanoiT(size, s, h, d);
+		})
+	}
+
+	async function draw() {
+		pw = ctx.canvas.width / 4;
+		w = 10;
+		hh = 400;
+		ctx.fillStyle = "lightgreen";
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		// await sleep(time_delay).then(() => {
+			for(let i=0; i<3; i++) {
+				ctx.fillStyle = "brown";
+				ctx.fillRect((i + 1) * pw - w, ctx.canvas.height - hh, w + w, hh);
+			}
+		// })
+
+		hh = 25;
+		for(let i=0; i<s.length; i++) {
+			// await sleep(time_delay).then(() => {
+				ctx.beginPath();
+				ctx.fillStyle = "yellow";
+				ctx.fillRect((1) * pw - s[i] * 25, ctx.canvas.height - (i + 1) * hh, s[i] * 50, hh);
+				ctx.strokeStyle = "white";
+				ctx.strokeRect((1) * pw - s[i] * 25, ctx.canvas.height - (i + 1) * hh, s[i] * 50, hh);
+				ctx.closePath();
+			// })
+		}
+
+		for(let i=0; i<h.length; i++) {
+			// await sleep(time_delay).then(() => {
+				ctx.beginPath();
+				ctx.fillStyle = "yellow";
+				ctx.fillRect((2) * pw - h[i] * 25, ctx.canvas.height - (i + 1) * hh, h[i] * 50, hh);
+				ctx.strokeStyle = "white";
+				ctx.strokeRect((2) * pw - h[i] * 25, ctx.canvas.height - (i + 1) * hh, h[i] * 50, hh);
+				ctx.closePath();
+			// })
+			
+		}
+
+		for(let i=0; i<d.length; i++) {
+			// await sleep(time_delay).then(() => {
+				ctx.beginPath();
+				ctx.fillStyle = "yellow";
+				ctx.fillRect((3) * pw - d[i] * 25, ctx.canvas.height - (i + 1) * hh, d[i] * 50, hh);
+				ctx.strokeStyle = "white";
+				ctx.strokeRect((3) * pw - d[i] * 25, ctx.canvas.height - (i + 1) * hh, d[i] * 50, hh);
+				ctx.closePath();
+			// })
+		}
+	}
+
+	async function stepsToSolveHanoiT(size, s, h, d) {
+		if (size >= 1) {
+
+		    // Move a tower of height-1 to the buffer peg, using the destination peg.
+		    await stepsToSolveHanoiT(size - 1, s, d, h);
+
+		    // Move the remaining disk to the destination peg.
+		   	await sleep(time_delay).then(() => {
+		   		draw();
+		   	});
+		   	d.push(s[s.length - 1]);
+		   	s.pop();
+		   	await sleep(time_delay).then(() => {
+		   		draw();
+		   	});
+		    // Move the tower of `size-1` from the `buffer peg` to the `destination peg` using the `source peg`.        
+		    await stepsToSolveHanoiT(size - 1, h, s, d);
+		  }
+		  
+		  return;
+	}
+
+	
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	</script>
+</body>
+</html>

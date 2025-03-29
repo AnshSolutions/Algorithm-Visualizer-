@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rabin Karp</title>
+	<style>
+		html, * {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			text-align: center;
+		}
+
+		.grid {
+			background: lightgreen;
+			margin: auto;
+		}
+
+		p:nth-child(1) {
+			padding: 10px 20px;
+			text-align: center;
+			font-family: ubuntu;
+			font-weight: bolder;
+			font-size: 25px;
+			text-transform: uppercase;
+			color: gray;
+		}
+
+		.visualize {
+			padding: 10px 20px;
+		}
+
+		.instruction {
+			padding: 10px 20px 10px 0px;
+			background: lightgreen;
+		}
+		.instruction > span {
+			background: green;
+			font-weight: bolder;
+			color: white;
+			padding: 10px 20px;
+		}
+
+	</style>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+	<p>Rabin Karp</p>
+	<canvas class='grid' width="1000" height="500">
+		
+	</canvas>
+	<div>
+		<span class="instruction"><span>Hash Function :</span>  Sum of ASCII</span>
+		<button class="visualize">Compare</button>
+	</div>
+	<script>
+
+// Main
+	let ctx = document.querySelector("canvas").getContext("2d");
+	let size = 10;
+	let arr = [];
+	let time_delay = 1000;
+	let str = "ABABDABACDABABCABAB";
+	size = str.length;
+	let substr = "CABAB";
+	let ssize = substr.length;
+	let hashString = "";
+	let ascii_sstr = 0;
+	let ascii_str = 0;
+	init();
+// Utility
+	function init() {
+		drawArray(0, 0);
+		add_listeners()
+	}
+
+	async function compare() {
+		pw = ctx.canvas.width / size;
+		h = 70;
+		y = ctx.canvas.height - 100;
+		let i;
+		k = ssize + 2;
+		for(i=0; i<ssize; i++ ){
+			// await sleep(time_delay).then(() => {
+				k = 1 + k
+			
+				ctx.beginPath();
+				ctx.fillStyle = "black";
+				if(hashString.length - 1 <= i) {
+					if(hashString[i] != substr[i]) {
+						ctx.fillStyle = "red";			
+					}
+				}
+				ctx.fillRect(k * pw, y, pw, h);
+				
+				ctx.strokeStyle = "white";
+				ctx.strokeRect(k * pw, y, pw, h);
+				
+				ctx.fillStyle = "white";
+				ctx.font = "bolder 13px ubuntu"
+				ctx.fillText(substr[i], k * pw + pw / 2, y + h / 2);
+
+				ctx.closePath();
+			// })	
+		}
+
+		y = ctx.canvas.height - 200;
+		k = ssize + 2;
+		for(i=0; i<hashString.length; i++ ){
+			// await sleep(time_delay).then(() => {
+				k += 1;
+			
+				ctx.beginPath();
+				ctx.fillStyle = "black";
+				if(hashString[i] != substr[i]) {
+					ctx.fillStyle = "red";			
+				}
+				ctx.fillRect(k * pw, y, pw, h);
+				
+				ctx.strokeStyle = "white";
+				ctx.strokeRect(k * pw, y, pw, h);
+				
+				ctx.fillStyle = "white";
+				ctx.font = "bolder 13px ubuntu"
+				ctx.fillText(hashString[i], k * pw + pw / 2, y + h / 2);
+				ctx.closePath();
+			// })		
+		}
+	}
+
+	async function drawHash() {
+		pw = ctx.canvas.width / size;
+		h = 70;
+		y = ctx.canvas.height - 100;
+		let i;
+		ascii_sstr = 0;
+		for(i=0; i<ssize; i++ ){
+			ctx.beginPath();
+			ctx.fillStyle = "black";
+			
+			ctx.fillRect(i * pw, y, pw, h);
+			
+			ctx.strokeStyle = "white";
+			ctx.strokeRect(i * pw, y, pw, h);
+			
+			ctx.fillStyle = "white";
+			ctx.font = "bolder 13px ubuntu"
+			ctx.fillText(substr[i], i * pw + pw / 2, y + h / 2);
+
+			ctx.closePath();
+			ascii_sstr += substr.charCodeAt(i);		
+		}
+
+		ctx.beginPath();
+		ctx.fillStyle = "blue";
+		ctx.fillRect(i * pw, y, pw * 1.5, h);
+		ctx.fillStyle = "white";
+		ctx.font = "bolder 13px ubuntu"
+		ctx.fillText(ascii_sstr, i * pw + pw / 2, y + h / 2);
+		ctx.fillStyle = "black";
+		ctx.fillText("SUBSTR", 100, ctx.canvas.height - 10);
+
+		ctx.closePath();
+		i = 0;
+		ascii_str = 0;
+		y = ctx.canvas.height - 200;
+		for(i=0; i<hashString.length; i++ ){
+			ctx.beginPath();
+			ctx.fillStyle = "black";
+			
+			ctx.fillRect(i * pw, y, pw, h);
+			
+			ctx.strokeStyle = "white";
+			ctx.strokeRect(i * pw, y, pw, h);
+			
+			ctx.fillStyle = "white";
+			ctx.font = "bolder 13px ubuntu"
+			ctx.fillText(hashString[i], i * pw + pw / 2, y + h / 2);
+
+			ctx.closePath();
+			ascii_str += hashString.charCodeAt(i);	
+			ctx.closePath();		
+		}
+		ctx.beginPath();
+		ctx.fillStyle = "blue";
+		ctx.fillRect(i * pw, y, pw * 1.5, h);
+		ctx.fillStyle = "white";
+		ctx.font = "bolder 13px ubuntu"
+		ctx.fillText(ascii_str, i * pw + pw / 2, y + h / 2);
+		i++;
+
+		if(ascii_sstr == ascii_str) {
+				await sleep(time_delay).then(() => {
+					compare();
+				})
+		}
+		ctx.closePath();
+
+	}
+
+	async function drawArray(i, j) {
+		pw = ctx.canvas.width / size;
+		h = 70;
+		gap = 10;
+		for(let k = 0; k<size; k++) {
+			ctx.beginPath();
+			ctx.fillStyle = "black";
+			if(k >= i && k <=(j)) {
+				ctx.fillStyle = "yellow";	
+			}
+			ctx.fillRect(k * pw, 0 * h, pw, h);
+			
+			ctx.strokeStyle = "white";
+			ctx.strokeRect(k * pw, 0 * h, pw, h);
+			
+			ctx.fillStyle = "white";
+			ctx.font = "bolder 13px ubuntu"
+			ctx.fillText(str[k], k * pw + pw / 2, 0 * h + h / 2);
+			
+
+			///
+
+			ctx.fillStyle = "gray";
+			if(k == i) {
+				ctx.fillStyle = "brown";	
+			}
+			ctx.fillRect(k * pw, 2* h, pw, h);
+			
+			ctx.strokeStyle = "white";
+			ctx.strokeRect(k * pw, 2* h, pw, h);
+			
+			ctx.fillStyle = "white";
+			ctx.font = "bolder 13px ubuntu"
+			ctx.fillText(k, k * pw + pw / 2,2 * h + h / 2);
+
+
+
+			ctx.closePath();
+		}
+		ctx.fillStyle = "lightgreen";
+		ctx.fillRect(0, 1 * h + gap, pw * size, h)
+		ctx.strokeStyle = "lightgreen";
+		ctx.strokeRect(0, 1 * h + gap, pw * size, h)
+	}
+
+	async function animate() {
+		let j = 0;
+		for(let i=0; i<size; i++) {
+			hashString = ""
+			for(let k=j; k<=i; k++) {
+				hashString += str[k];
+			}
+			if(i < ssize - 1) {
+				await sleep(time_delay).then(() => {
+						drawArray(j, i);
+						drawHash();
+			
+				});
+			}
+			else if(i == ssize - 1) {
+				await sleep(time_delay).then(() => {
+					drawArray(j, i);
+					drawHash();
+			
+					j++;
+				});
+			}
+			else {
+				await sleep(time_delay).then(() => {
+					drawArray(j, i);
+					drawHash();
+			
+					j++;
+				});
+			}
+		}
+
+		await sleep(time_delay).then(() => {
+			alert("found the substring at index 14");
+		})
+
+	}
+
+	function add_listeners() {
+		document.querySelector(".visualize").addEventListener("click", () => {
+			document.querySelector(".visualize").disabled = true;
+			animate();
+		})
+	}
+
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	</script>
+</body>
+</html>
