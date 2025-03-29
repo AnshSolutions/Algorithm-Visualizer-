@@ -8,7 +8,7 @@ A web-based visualization tool for Data Structures and Algorithms.
 
 📌 Features
 ✔ Sorting Algorithms – Bubble Sort, Merge Sort, Quick Sort, etc.
-✔ Searching Algorithms – Linear Search, Binary Search, etc.
+✔ Searching Algorithms – Linear Search, Binary Search, etc
 ✔ Graph Algorithms – BFS, DFS, Dijkstra’s Algorithm, etc.
 ✔ Backtracking – N-Queens, Sudoku Solver, etc.
 ✔ Dynamic Programming – Knapsack, LCS, etc.
